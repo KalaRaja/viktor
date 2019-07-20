@@ -37,3 +37,4 @@ public class StatusController {
 		return notOk + " out of " + statuses.size() + " of your web services are running";
 	}
 }
+
