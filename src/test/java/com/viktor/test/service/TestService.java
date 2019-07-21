@@ -18,7 +18,7 @@ import com.viktor.repo.StatusRepo;
 import com.viktor.service.StatusService;
 
 @RunWith(SpringRunner.class)
-@SpringBootTest(classes = com.viktor.application.Application.class)
+@SpringBootTest(classes = com.viktor.Application.class)
 public class TestService {
 
 	@Autowired

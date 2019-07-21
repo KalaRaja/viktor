@@ -31,6 +31,11 @@ public class StatusController {
 		if (notOk == 0) {
 			return "All of your web services are running";
 		}
+		
+		if (notOk == statuses.size()) {
+			return "None of your web services are running";
+		}
+		
 		if (statuses.size() == 1) {
 			return notOk != 0 ? "Your web service is not running" : "Your web service is running";
 		}
