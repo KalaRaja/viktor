@@ -10,12 +10,16 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.viktor.model.Status;
 import com.viktor.service.StatusService;
+import com.viktor.text.Text;
 
 @RestController
 public class StatusController {
 
 	@Autowired
 	private StatusService statusService;
+	
+	@Autowired
+	private Text text;
 	
 	@RequestMapping("/status")
 	public String getStatus(@RequestParam(value = "search", defaultValue = "all") String searchString) {
@@ -26,20 +30,20 @@ public class StatusController {
 		}
 	}
 	
-	private static String dataToText(List<Status> statuses) {
+	private String dataToText(List<Status> statuses) {
 		long notOk = statuses.stream().map(status -> status.getResponseCode()).filter(code -> code != 200).collect(Collectors.counting());
 		if (notOk == 0) {
-			return "All of your web services are running";
+			return text.getALL_RUNNING();
 		}
 		
 		if (notOk == statuses.size()) {
-			return "None of your web services are running";
+			return text.getNONE_RUNNING();
 		}
 		
 		if (statuses.size() == 1) {
-			return notOk != 0 ? "Your web service is not running" : "Your web service is running";
+			return notOk != 0 ? text.getRUNNING() : text.getNOT_RUNNING();
 		}
-		return notOk + " out of " + statuses.size() + " of your web services are running";
+		return notOk + " / " + statuses.size() + " " + text.getPARTIAL_RUNNING();
 	}
 }
 

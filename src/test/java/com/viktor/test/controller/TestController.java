@@ -19,6 +19,7 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
 import com.viktor.model.Status;
 import com.viktor.service.StatusService;
+import com.viktor.text.Text;
 
 @RunWith(SpringRunner.class)
 @WebMvcTest(com.viktor.controller.StatusController.class)
@@ -30,9 +31,16 @@ public class TestController {
 	@Autowired
 	MockMvc mockMvc;
 	
+	@MockBean
+	Text text;
+	
 	@Before
 	public void setup() {
-		
+		when(text.getALL_RUNNING()).thenReturn("All of your web services are running");
+		when(text.getNONE_RUNNING()).thenReturn("None of your web services are running");
+		when(text.getRUNNING()).thenReturn("Your web service is running");
+		when(text.getNOT_RUNNING()).thenReturn("Your web service is not running");
+		when(text.getPARTIAL_RUNNING()).thenReturn("1 / 2 of your web services are running");	
 	}
 	
 	@Test
@@ -43,7 +51,7 @@ public class TestController {
 		RequestBuilder requestBuilder = MockMvcRequestBuilders.get("/status");
 		mockMvc.perform(requestBuilder)
 		.andExpect(MockMvcResultMatchers.status().is(200))
-		.andExpect(MockMvcResultMatchers.content().string("All of your web services are running"));
+		.andExpect(MockMvcResultMatchers.content().string(text.getALL_RUNNING()));
 		
 		when(statusService.getStatuses()).thenReturn(Stream.of(new Status("testUrl", 404, "abc", "abc", "test-tag"),
 				new Status("testUrl1", 200, "abc", "abc", "test-tag")).collect(Collectors.toList()));
@@ -51,7 +59,7 @@ public class TestController {
 		requestBuilder = MockMvcRequestBuilders.get("/status");
 		mockMvc.perform(requestBuilder)
 		.andExpect(MockMvcResultMatchers.status().is(200))
-		.andExpect(MockMvcResultMatchers.content().string("1 out of 2 of your web services are running"));
+		.andExpect(MockMvcResultMatchers.content().string("1 / 2 " + text.getPARTIAL_RUNNING()));
 		
 		when(statusService.getStatuses()).thenReturn(Stream.of(new Status("testUrl", 404, "abc", "abc", "test-tag"),
 				new Status("testUrl1", 404, "abc", "abc", "test-tag")).collect(Collectors.toList()));
@@ -59,7 +67,7 @@ public class TestController {
 		requestBuilder = MockMvcRequestBuilders.get("/status");
 		mockMvc.perform(requestBuilder)
 		.andExpect(MockMvcResultMatchers.status().is(200))
-		.andExpect(MockMvcResultMatchers.content().string("None of your web services are running"));
+		.andExpect(MockMvcResultMatchers.content().string(text.getNONE_RUNNING()));
 		
 		
 		
@@ -69,7 +77,7 @@ public class TestController {
 		requestBuilder = MockMvcRequestBuilders.get("/status?search=tag");
 		mockMvc.perform(requestBuilder)
 		.andExpect(MockMvcResultMatchers.status().is(200))
-		.andExpect(MockMvcResultMatchers.content().string("All of your web services are running"));
+		.andExpect(MockMvcResultMatchers.content().string(text.getALL_RUNNING()));
 		
 		when(statusService.getStatusBy("tag")).thenReturn(Stream.of(new Status("testUrl", 404, "abc", "abc", "test-tag"),
 				new Status("testUrl1", 200, "abc", "abc", "test-tag")).collect(Collectors.toList()));
@@ -77,7 +85,7 @@ public class TestController {
 		requestBuilder = MockMvcRequestBuilders.get("/status?search=tag");
 		mockMvc.perform(requestBuilder)
 		.andExpect(MockMvcResultMatchers.status().is(200))
-		.andExpect(MockMvcResultMatchers.content().string("1 out of 2 of your web services are running"));
+		.andExpect(MockMvcResultMatchers.content().string("1 / 2 " +  text.getPARTIAL_RUNNING()));
 		
 		when(statusService.getStatusBy("tag")).thenReturn(Stream.of(new Status("testUrl", 404, "abc", "abc", "test-tag"),
 				new Status("testUrl1", 404, "abc", "abc", "test-tag")).collect(Collectors.toList()));
@@ -85,7 +93,7 @@ public class TestController {
 		requestBuilder = MockMvcRequestBuilders.get("/status?search=tag");
 		mockMvc.perform(requestBuilder)
 		.andExpect(MockMvcResultMatchers.status().is(200))
-		.andExpect(MockMvcResultMatchers.content().string("None of your web services are running"));
+		.andExpect(MockMvcResultMatchers.content().string(text.getNONE_RUNNING()));
 		
 	}
 	
