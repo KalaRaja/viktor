@@ -30,7 +30,32 @@ public class StatusController {
 		}
 	}
 	
+	@RequestMapping("/down")
+	public String getDown(@RequestParam(value = "search", defaultValue = "all") String searchString) {
+		List<String> names = null;
+		if (searchString.equalsIgnoreCase("all")) {
+			 names = statusService.getDownStatus().stream().map((status) -> status.getName()).collect(Collectors.toList());
+		} else {
+			names = statusService.getDownStatusBy(searchString).stream().map((status) -> status.getName()).collect(Collectors.toList());
+		}
+		
+		if (names.size() == 0) {
+			return text.getALL_RUNNING();
+		}
+		
+		if (names.size() == 1) {
+			return names.get(0) ;
+		}
+		
+		names.add(names.size() - 1, "and");
+		return  String.join(", ", names).replace(", and,", " and");
+	}
+	
 	private String dataToText(List<Status> statuses) {
+		if (statuses.size() == 0) {
+			return text.getNOT_FOUND();
+		}
+		
 		long notOk = statuses.stream().map(status -> status.getResponseCode()).filter(code -> code != 200).collect(Collectors.counting());
 		if (notOk == 0) {
 			return text.getALL_RUNNING();
