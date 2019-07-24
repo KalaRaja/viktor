@@ -1,5 +1,9 @@
 package com.viktor.controller;
 
+import java.text.DateFormatSymbols;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -39,20 +43,54 @@ public class StatusController {
 			names = statusService.getDownStatusBy(searchString).stream().map((status) -> status.getName()).collect(Collectors.toList());
 		}
 		
-		if (names.size() == 0) {
+		return addAnd(names);
+		
+	}
+	
+	@RequestMapping("/all")
+	public String getAll(@RequestParam(value = "search", defaultValue = "all") String searchString) {
+		List<String> names;
+		if (searchString.equalsIgnoreCase("all")) {
+			names =  statusService.getAll().stream().map((status) -> status.getName()).collect(Collectors.toList());
+		} else {
+			names = statusService.getAllBy(searchString).stream().map((status) -> status.getName()).collect(Collectors.toList());
+		}
+		
+		return addAnd(names);
+	}
+	
+	@RequestMapping("/downtime")
+	public String getDowntome(@RequestParam(value = "search") String serviceName) throws ParseException {
+		if (statusService.getAll().stream().filter(status -> status.getName().equalsIgnoreCase(serviceName)).collect(Collectors.toList()).isEmpty()) {
+			return text.getNOT_FOUND();
+		}
+		
+		List<Status> statusList = statusService.getDownStatusByName(serviceName);
+		if (statusList.isEmpty()) {
 			return text.getALL_RUNNING();
 		}
 		
-		if (names.size() == 1) {
-			return names.get(0) ;
+		Status status = statusList.get(0);
+		String textDateTime = status.getLastStatusChangeTimeStamp();
+		
+		return formatDate(textDateTime);
+	}
+	
+	private String addAnd(List<String> items) {
+		if (items.isEmpty()) {
+			return text.getALL_RUNNING();
 		}
 		
-		names.add(names.size() - 1, "and");
-		return  String.join(", ", names).replace(", and,", " and");
+		if (items.size() == 1) {
+			return items.get(0) ;
+		}
+		
+		items.add(items.size() - 1, text.getAND());
+		return  String.join(", ", items).replace(", " + text.getAND() + ",", " "+text.getAND()); 
 	}
 	
 	private String dataToText(List<Status> statuses) {
-		if (statuses.size() == 0) {
+		if (statuses.isEmpty()) {
 			return text.getNOT_FOUND();
 		}
 		
@@ -69,6 +107,19 @@ public class StatusController {
 			return notOk != 0 ? text.getRUNNING() : text.getNOT_RUNNING();
 		}
 		return notOk + " / " + statuses.size() + " " + text.getPARTIAL_RUNNING();
+	}
+	
+	private String formatDate(String dateString) throws ParseException {
+		SimpleDateFormat dateFormat = new SimpleDateFormat(text.getDATE_FORMAT());
+		Date date = dateFormat.parse(dateString);
+		DateFormatSymbols dateFormatSymbols = new DateFormatSymbols();
+		String[] days = dateFormatSymbols.getWeekdays();
+		String[] months = dateFormatSymbols.getMonths();
+		String day = days[date.getDay()];
+		int dateNumber = date.getDate();
+		String month = months[date.getMonth()];		
+		int year = date.getYear();
+		return text.getWENT_DOWN_ON() + " " + day + ", " + dateNumber + " " + month + ", " + (year + 1900) + ", " + text.getAT() + " " + new SimpleDateFormat("hh:mm a").format(date);
 	}
 }
 

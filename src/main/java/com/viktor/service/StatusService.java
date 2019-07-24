@@ -32,4 +32,15 @@ public class StatusService {
 	public List<Status> getDownStatusBy(String tag) {
 		return statusRepo.findByResponseCodeNotAndTag(200, tag);
 	}
+	
+	public List<Status> getDownStatusByName(String name) {
+		return statusRepo.findByResponseCodeNotAndName(200, name);
+	}
+	public List<Status> getAll() {
+		return statusRepo.findAll();
+	}
+	
+	public List<Status> getAllBy(String tag) {
+		return statusRepo.findAllByTag(tag);
+	}
 }
