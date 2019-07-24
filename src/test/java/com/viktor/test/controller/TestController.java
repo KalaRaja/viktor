@@ -40,7 +40,7 @@ public class TestController {
 		when(text.getNONE_RUNNING()).thenReturn("None of your web services are running");
 		when(text.getRUNNING()).thenReturn("Your web service is running");
 		when(text.getNOT_RUNNING()).thenReturn("Your web service is not running");
-		when(text.getPARTIAL_RUNNING()).thenReturn("1 / 2 of your web services are running");	
+		when(text.getPARTIAL_RUNNING()).thenReturn("1 / 2 of your web services are not running");	
 	}
 	
 	@Test

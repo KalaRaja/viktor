@@ -1,6 +1,5 @@
 package com.viktor.service;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,12 +17,30 @@ public class StatusService {
 		return statusRepo.findAll();
 	}
 	
-	public List<Status> getStatusBy(String id) {
-		List<Status> statuses = statusRepo.findByTag(id);
+	public List<Status> getStatusBy(String search) {
+		List<Status> statuses = statusRepo.findByTag(search);
 		if (statuses.isEmpty()) {
-			new ArrayList<Status>().add(statusRepo.findById(id).orElse(new Status()));
+			statuses = statusRepo.findByName(search);
 		}
 		return statuses;
-		
+	}
+	
+	public List<Status> getDownStatus() {
+		return statusRepo.findByResponseCodeNot(200);
+	}
+	
+	public List<Status> getDownStatusBy(String tag) {
+		return statusRepo.findByResponseCodeNotAndTag(200, tag);
+	}
+	
+	public List<Status> getDownStatusByName(String name) {
+		return statusRepo.findByResponseCodeNotAndName(200, name);
+	}
+	public List<Status> getAll() {
+		return statusRepo.findAll();
+	}
+	
+	public List<Status> getAllBy(String tag) {
+		return statusRepo.findAllByTag(tag);
 	}
 }

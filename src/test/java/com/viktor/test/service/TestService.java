@@ -32,6 +32,9 @@ public class TestService {
 		when(statusRepo.findByTag("testTag")).thenReturn(Stream.of(new Status("testUrl", 200, "abc", "abc", "test-tag"),
 				new Status("testUrl1", 200, "abc", "abc", "test-tag")).collect(Collectors.toList()));
 		
+		when(statusRepo.findByName("testTag")).thenReturn(Stream.of(new Status("testUrl", 200, "abc", "abc", "test-tag"),
+				new Status("testUrl1", 200, "abc", "abc", "test-tag")).collect(Collectors.toList()));
+		
 		when(statusRepo.findAll()).thenReturn(Stream.of(new Status("testUrl", 200, "abc", "abc", "test-tag1"),
 				new Status("testUrl1", 200, "abc", "abc", "test-tag2")).collect(Collectors.toList()));
 		

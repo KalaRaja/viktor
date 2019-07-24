@@ -12,5 +12,11 @@ import com.viktor.model.Status;
 public interface StatusRepo extends CrudRepository<Status, String>{
 
 	public List<Status> findByTag(String tag);
+	public List<Status> findByName(String name);
 	public List<Status> findAll();
+	public List<Status> findByResponseCodeNot(int resonseCode);
+	public List<Status> findByResponseCodeNotAndTag(int resonseCode, String tag); 
+	public List<Status> findAllByTag(String tag);
+	public List<Status> findByResponseCodeNotAndName(int responseCode, String name);
 }
+

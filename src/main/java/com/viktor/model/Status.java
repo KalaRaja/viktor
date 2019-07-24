@@ -12,6 +12,9 @@ public class Status {
 
 	@Column(name = "responsecode")
 	private int responseCode;
+	
+	@Column(name = "name")
+	private String name;
 
 	@Column(name = "timestamp")
 	private String pollTimeStamp;
@@ -33,6 +36,15 @@ public class Status {
 	public Status() {
 		super();
 		// TODO Auto-generated constructor stub
+	}
+
+	
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
 	}
 
 	public String getUrl() {
@@ -73,6 +85,12 @@ public class Status {
 
 	public void setTag(String tag) {
 		this.tag = tag;
+	}
+
+	@Override
+	public String toString() {
+		return "Status [url=" + url + ", responseCode=" + responseCode + ", name=" + name + ", pollTimeStamp="
+				+ pollTimeStamp + ", lastStatusChangeTimeStamp=" + lastStatusChangeTimeStamp + ", tag=" + tag + "]";
 	}
 
 }
