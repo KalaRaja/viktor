@@ -87,4 +87,10 @@ public class Status {
 		this.tag = tag;
 	}
 
+	@Override
+	public String toString() {
+		return "Status [url=" + url + ", responseCode=" + responseCode + ", name=" + name + ", pollTimeStamp="
+				+ pollTimeStamp + ", lastStatusChangeTimeStamp=" + lastStatusChangeTimeStamp + ", tag=" + tag + "]";
+	}
+
 }
